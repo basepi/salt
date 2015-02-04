@@ -217,7 +217,7 @@ def managed(name, type, enabled=True, **kwargs):
     try:
         old = __salt__['ip.get_interface'](name)
         new = __salt__['ip.build_interface'](name, type, enabled, **kwargs)
-        if kwargs['test']:
+        if __opts__['test']:
             if old == new:
                 pass
             if not old and new:
@@ -250,7 +250,7 @@ def managed(name, type, enabled=True, **kwargs):
         try:
             old = __salt__['ip.get_bond'](name)
             new = __salt__['ip.build_bond'](name, **kwargs)
-            if kwargs['test']:
+            if __opts__['test']:
                 if old == new:
                     pass
                 if not old and new:
@@ -279,7 +279,7 @@ def managed(name, type, enabled=True, **kwargs):
             ret['comment'] = str(error)
             return ret
 
-    if kwargs['test']:
+    if __opts__['test']:
         return ret
 
     # Bring up/shutdown interface
@@ -346,7 +346,7 @@ def routes(name, **kwargs):
     try:
         old = __salt__['ip.get_routes'](name)
         new = __salt__['ip.build_routes'](name, **kwargs)
-        if kwargs['test']:
+        if __opts__['test']:
             if old == new:
                 return ret
             if not old and new:
