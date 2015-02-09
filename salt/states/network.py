@@ -166,6 +166,7 @@ all interfaces are ignored unless specified.
 import difflib
 import salt.utils
 import salt.utils.network
+import traceback
 from salt.loader import _create_loader
 
 # Set up logging
@@ -242,7 +243,8 @@ def managed(name, type, enabled=True, **kwargs):
                 ret['changes']['interface'] = ''.join(diff)
     except AttributeError as error:
         ret['result'] = False
-        ret['comment'] = str(error)
+        ret['comment'] = ('Failed to build non-bond interface.\n{0}\n{1}'
+                          .format(traceback.format_exc(), str(error)))
         return ret
 
     # Setup up bond modprobe script if required
@@ -276,7 +278,8 @@ def managed(name, type, enabled=True, **kwargs):
         except AttributeError as error:
             #TODO Add a way of reversing the interface changes.
             ret['result'] = False
-            ret['comment'] = str(error)
+            ret['comment'] = ('Failed to build bond interface.\n{0}\n{1}'
+                              .format(traceback.format_exc(), str(error)))
             return ret
 
     if __opts__['test']:
@@ -312,7 +315,8 @@ def managed(name, type, enabled=True, **kwargs):
                 ret['changes']['status'] = 'Interface {0} down'.format(name)
     except Exception as error:
         ret['result'] = False
-        ret['comment'] = str(error)
+        ret['comment'] = ('Failed to apply changes to interface.\n{0}\n{1}'
+                          .format(traceback.format_exc(), str(error)))
         return ret
 
     load = _create_loader(__opts__, 'grains', 'grain', ext_dirs=False)
